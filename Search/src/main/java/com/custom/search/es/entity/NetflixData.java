@@ -1,5 +1,6 @@
 package com.custom.search.es.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import org.springframework.data.annotation.Id;
@@ -14,17 +15,25 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+/**
+ * This entity class is used to map the "netflix" index to a Java POJO.
+ * 
+ * @author Abhijeet
+ *
+ */
 @Getter
 @Setter
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
 @Document(indexName = "netflix", createIndex = false)
-public class NetflixData {
+public class NetflixData implements Serializable {
+
+	private static final long serialVersionUID = 1063565029021759659L;
 
 	@Id
 	private String id;
-	
+
 	@Field(type = FieldType.Text, name = "show_id")
 	private String showId;
 
