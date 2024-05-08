@@ -2,6 +2,7 @@ package com.custom.search.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -65,7 +66,7 @@ public class NetflixSearchControllerV1 {
 			@Content(schema = @Schema(implementation = CommonResponse.class)) })
 	@GetMapping(value = "/title/{title}/{page}/{size}")
 	public ResponseEntity<Object> searchByTitle(@NotBlank @PathVariable String title,
-			@PositiveOrZero @PathVariable int page, @Positive @PathVariable int size) throws CommonException {
+			@PositiveOrZero @PathVariable int page, @Positive @PathVariable int size) {
 		Object response = netflixService.findByTitle(title, page, size);
 
 		if (response instanceof Integer i) {
@@ -73,8 +74,10 @@ public class NetflixSearchControllerV1 {
 				return ResponseHelper.generateResponse(FailureConstants.NO_TITLES_FOUND.getFailureCode(),
 						FailureConstants.NO_TITLES_FOUND.getFailureMsg());
 			else
-				throw new CommonException(FailureConstants.INTERNAL_SERVER_ERROR.getFailureCode(),
-						FailureConstants.INTERNAL_SERVER_ERROR.getFailureMsg());
+				return ResponseHelper.generateResponse(
+						new CommonResponse(FailureConstants.INTERNAL_SERVER_ERROR.getFailureCode(),
+								FailureConstants.INTERNAL_SERVER_ERROR.getFailureMsg()),
+						HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 
 		return ResponseHelper.generateResponse(SuccessConstants.FIND_BY_TITLE.getSuccessCode(),
