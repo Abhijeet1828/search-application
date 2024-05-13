@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.custom.common.utilities.exception.CommonException;
 import com.custom.common.utilities.response.CommonResponse;
 import com.custom.common.utilities.response.ResponseHelper;
 import com.custom.search.constants.FailureConstants;
@@ -55,8 +54,6 @@ public class NetflixSearchControllerV1 {
 	 * @param size
 	 * 
 	 * @return {@link SearchResponse}
-	 * 
-	 * @throws CommonException
 	 */
 	@Tag(name = "get", description = "GET methods of Netflix Controller")
 	@Operation(summary = "Fetch the netflix titles", description = "The API fetches the titles matching the provided title string.")
@@ -82,6 +79,41 @@ public class NetflixSearchControllerV1 {
 
 		return ResponseHelper.generateResponse(SuccessConstants.FIND_BY_TITLE.getSuccessCode(),
 				SuccessConstants.FIND_BY_TITLE.getSuccessMsg(), response);
+	}
+
+	/**
+	 * This method is used to search all the Netflix data by the provided type.
+	 * 
+	 * @param type
+	 * @param page
+	 * @param size
+	 * 
+	 * @return {@link SearchResponse}
+	 */
+	@Tag(name = "get", description = "GET methods of Netflix Controller")
+	@Operation(summary = "Fetch the netflix data by type", description = "The API fetches the netflix data matching the provided type string.")
+	@ApiResponse(responseCode = "2001", description = "Netflix Data by Type Found", content = {
+			@Content(mediaType = "application/json", schema = @Schema(implementation = SearchResponse.class)) })
+	@ApiResponse(responseCode = "-2000", description = "No netflix data found by type", content = {
+			@Content(schema = @Schema(implementation = CommonResponse.class)) })
+	@GetMapping(value = "/type/{type}/{page}/{size}")
+	public ResponseEntity<Object> searchByType(@NotBlank @PathVariable String type,
+			@PositiveOrZero @PathVariable int page, @Positive @PathVariable int size) {
+		Object response = netflixService.findByType(type, page, size);
+
+		if (response instanceof Integer i) {
+			if (i == 1)
+				return ResponseHelper.generateResponse(FailureConstants.NO_TYPE_RESULTS_FOUND.getFailureCode(),
+						FailureConstants.NO_TYPE_RESULTS_FOUND.getFailureMsg());
+			else
+				return ResponseHelper.generateResponse(
+						new CommonResponse(FailureConstants.INTERNAL_SERVER_ERROR.getFailureCode(),
+								FailureConstants.INTERNAL_SERVER_ERROR.getFailureMsg()),
+						HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+
+		return ResponseHelper.generateResponse(SuccessConstants.FIND_BY_TYPE.getSuccessCode(),
+				SuccessConstants.FIND_BY_TYPE.getSuccessMsg(), response);
 	}
 
 }

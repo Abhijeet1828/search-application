@@ -1,5 +1,7 @@
 package com.custom.search.service;
 
+import java.util.List;
+
 import org.apache.commons.collections4.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -7,9 +9,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.elasticsearch.core.SearchHit;
+import org.springframework.data.elasticsearch.core.SearchHits;
 import org.springframework.stereotype.Service;
 
 import com.custom.search.es.entity.NetflixData;
+import com.custom.search.es.repository.ElasticsearchDao;
 import com.custom.search.es.repository.NetflixDataRepository;
 import com.custom.search.response.SearchResponse;
 
@@ -29,10 +34,12 @@ public class NetflixServiceV1Impl implements NetflixService {
 	private static final Logger LOGGER = LoggerFactory.getLogger(NetflixServiceV1Impl.class);
 
 	private final NetflixDataRepository netflixDataRepository;
+	private final ElasticsearchDao elasticsearchDao;
 
 	@Autowired
-	public NetflixServiceV1Impl(NetflixDataRepository netflixDataRepository) {
+	public NetflixServiceV1Impl(NetflixDataRepository netflixDataRepository, ElasticsearchDao elasticsearchDao) {
 		this.netflixDataRepository = netflixDataRepository;
+		this.elasticsearchDao = elasticsearchDao;
 	}
 
 	@Override
@@ -51,6 +58,25 @@ public class NetflixServiceV1Impl implements NetflixService {
 
 		} catch (Exception e) {
 			LOGGER.error("Exception in findByTitle", e);
+			return 2;
+		}
+	}
+
+	@Override
+	public Object findByType(String type, int page, int size) {
+		try {
+			SearchHits<NetflixData> searchHits = elasticsearchDao.searchByType(type, page, size);
+
+			if (searchHits.isEmpty()) {
+				return 1;
+			}
+
+			List<NetflixData> searchResults = searchHits.stream().map(SearchHit::getContent).toList();
+
+			return SearchResponse.builder().data(searchResults).numberOfPages(0)
+					.totalElements(searchHits.getTotalHits()).build();
+		} catch (Exception e) {
+			LOGGER.error("Exception in findByType", e);
 			return 2;
 		}
 	}

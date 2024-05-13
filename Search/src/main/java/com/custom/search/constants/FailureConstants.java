@@ -11,7 +11,8 @@ package com.custom.search.constants;
 public enum FailureConstants {
 
 	INTERNAL_SERVER_ERROR(-1999, "Oops! Looks like something went wrong."),
-	NO_TITLES_FOUND(-2000, "No titles found by the search string");
+	NO_TITLES_FOUND(-2000, "No titles found by the search string"),
+	NO_TYPE_RESULTS_FOUND(-2001, "No search results for the searched type");
 
 	private final int failureCode;
 	private final String failureMsg;

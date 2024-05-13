@@ -9,7 +9,8 @@ package com.custom.search.constants;
  */
 public enum SuccessConstants {
 
-	FIND_BY_TITLE(2000, "Titles searched successfully");
+	FIND_BY_TITLE(2000, "Titles searched successfully"), 
+	FIND_BY_TYPE(2001, "Type searched successfully");
 
 	private final int successCode;
 	private final String successMsg;
