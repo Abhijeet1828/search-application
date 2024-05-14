@@ -151,6 +151,8 @@
 				<configuration>
 					<excludes>
 						<exclude>**/*com/custom/search/constants*/**</exclude>
+						<exclude>**/*com/custom/search/es/entity*/**</exclude>
+						<exclude>**/*com/custom/search/response*/**</exclude>
 					</excludes>
 				</configuration>
 				<executions>

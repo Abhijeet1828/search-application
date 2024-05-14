@@ -76,6 +76,57 @@ class NetflixSearchControllerV1Test {
 
 		// Assert
 		assertEquals(-1999, commonResponse.getStatus().getStatusCode());
+	}
+	
+	@Test
+	void searchByType_TypeFound_Returns2001() throws CommonException {
+		// Arrange
+		String type = "Movie";
+		int page = 0;
+		int size = 10;
+		when(netflixService.findByType(type, page, size)).thenReturn(mock(SearchResponse.class));
 
+		// Act
+		ResponseEntity<Object> response = controller.searchByType(type, page, size);
+		CommonResponse commonResponse = TypeConversionUtils.convertToCustomClass(response.getBody(),
+				CommonResponse.class);
+
+		// Assert
+		assertEquals(2001, commonResponse.getStatus().getStatusCode());
+	}
+	
+	@Test
+	void searchByType_TypeNotFound_ReturnsNegative2001() throws CommonException {
+		// Arrange
+		String type = "Movie-Series";
+		int page = 0;
+		int size = 10;
+		when(netflixService.findByType(type, page, size)).thenReturn(1); // Simulating no titles found
+
+		// Act
+		ResponseEntity<Object> response = controller.searchByType(type, page, size);
+		CommonResponse commonResponse = TypeConversionUtils.convertToCustomClass(response.getBody(),
+				CommonResponse.class);
+
+		// Assert
+		assertEquals(-2001, commonResponse.getStatus().getStatusCode());
+	}
+	
+	@Test
+	void searchByType_InternalServerError_Returnsnegative1999() throws CommonException {
+		// Arrange
+		String type = "Internal Server Error";
+		int page = 0;
+		int size = 10;
+		when(netflixService.findByType(type, page, size))
+				.thenReturn(2);
+
+		// Act
+		ResponseEntity<Object> response = controller.searchByType(type, page, size);
+		CommonResponse commonResponse = TypeConversionUtils.convertToCustomClass(response.getBody(),
+				CommonResponse.class);
+
+		// Assert
+		assertEquals(-1999, commonResponse.getStatus().getStatusCode());
 	}
 }
