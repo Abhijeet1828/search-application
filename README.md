@@ -27,34 +27,34 @@ Collectively, this sophisticated ecosystem of technologies harmonizes seamlessly
   </tr>
   <tr>
     <td width="33%">Spring Boot</td>
-    <td width="33%">3.0.3</td>
+    <td width="50%">3.3.0-SNAPSHOT</td>
   </tr>
   <tr>
     <td width="33%">Java</td>
-    <td width="33%">3.0.3</td>
+    <td width="33%">22</td>
   </tr>
   <tr>
     <td width="33%">Elasticsearch</td>
-    <td width="33%">3.0.3</td>
+    <td width="33%">8.13.2</td>
   </tr>
   <tr>
     <td width="33%">Kibana</td>
-    <td width="33%">3.0.3</td>
+    <td width="33%">8.13.2</td>
   </tr>
   <tr>
     <td width="33%">Logstash</td>
-    <td width="33%">3.0.3</td>
+    <td width="33%">8.13.2</td>
   </tr>
   <tr>
     <td width="33%">MySQL</td>
-    <td width="33%">3.0.3</td>
+    <td width="33%">8.3.0</td>
   </tr>
   <tr>
     <td width="33%">JUnit</td>
-    <td width="33%">3.0.3</td>
+    <td width="33%">5.10.2</td>
   </tr>
   <tr>
     <td width="33%">Sonarqube</td>
-    <td width="33%">3.0.3</td>
+    <td width="33%">10.5</td>
   </tr>
 </table>
