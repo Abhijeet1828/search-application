@@ -1,7 +1,7 @@
 <a name="top"></a>
 
 <h1 align="center">
-:black_circle: The Ultimate Markdown Cheat Sheet :black_circle:
+:mag_right: Search Application :mag:
 </h1>
 <h2 align="center">
 <em>Spring Boot with Elasticsearch ( ELK Stack )</em>
