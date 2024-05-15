@@ -1,6 +1,5 @@
 package com.custom.search.es.repository;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.SearchHits;
@@ -16,7 +15,6 @@ public class ElasticsearchDaoImpl implements ElasticsearchDao {
 
 	private final ElasticsearchOperations elasticsearchOperations;
 
-	@Autowired
 	public ElasticsearchDaoImpl(ElasticsearchOperations elasticsearchOperations) {
 		this.elasticsearchOperations = elasticsearchOperations;
 	}

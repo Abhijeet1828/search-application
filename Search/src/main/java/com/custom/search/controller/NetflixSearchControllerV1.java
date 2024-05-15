@@ -1,6 +1,5 @@
 package com.custom.search.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -40,7 +39,6 @@ public class NetflixSearchControllerV1 {
 
 	private final NetflixService netflixService;
 
-	@Autowired
 	public NetflixSearchControllerV1(@Qualifier(value = "v1") NetflixService netflixService) {
 		this.netflixService = netflixService;
 	}

@@ -5,7 +5,6 @@ import java.util.List;
 import org.apache.commons.collections4.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -36,7 +35,6 @@ public class NetflixServiceV1Impl implements NetflixService {
 	private final NetflixDataRepository netflixDataRepository;
 	private final ElasticsearchDao elasticsearchDao;
 
-	@Autowired
 	public NetflixServiceV1Impl(NetflixDataRepository netflixDataRepository, ElasticsearchDao elasticsearchDao) {
 		this.netflixDataRepository = netflixDataRepository;
 		this.elasticsearchDao = elasticsearchDao;
