@@ -20,41 +20,53 @@ In alignment with contemporary best practices, the application harnesses the pow
 
 Collectively, this sophisticated ecosystem of technologies harmonizes seamlessly to underpin the search application, empowering it to deliver unparalleled performance, reliability, and maintainability.
 
-<table>
+<table align="center">
   <tr>
-    <th width="33%">Tools</td>
-    <th width="33%">Version</td>
+    <th width="33px">Tools</td>
+    <th width="45px">Version</td>
   </tr>
   <tr>
-    <td width="33%">Spring Boot</td>
-    <td width="50%">3.3.0-SNAPSHOT</td>
+    <td>Spring Boot</td>
+    <td>3.3.0-SNAPSHOT</td>
   </tr>
   <tr>
-    <td width="33%">Java</td>
-    <td width="33%">22</td>
+    <td>Java</td>
+    <td>22</td>
   </tr>
   <tr>
-    <td width="33%">Elasticsearch</td>
-    <td width="33%">8.13.2</td>
+    <td>Elasticsearch</td>
+    <td>8.13.2</td>
   </tr>
   <tr>
-    <td width="33%">Kibana</td>
-    <td width="33%">8.13.2</td>
+    <td>Kibana</td>
+    <td>8.13.2</td>
   </tr>
   <tr>
-    <td width="33%">Logstash</td>
-    <td width="33%">8.13.2</td>
+    <td>Logstash</td>
+    <td>8.13.2</td>
   </tr>
   <tr>
-    <td width="33%">MySQL</td>
-    <td width="33%">8.3.0</td>
+    <td>MySQL</td>
+    <td>8.3.0</td>
   </tr>
   <tr>
-    <td width="33%">JUnit</td>
-    <td width="33%">5.10.2</td>
+    <td>JUnit</td>
+    <td>5.10.2</td>
   </tr>
   <tr>
-    <td width="33%">Sonarqube</td>
-    <td width="33%">10.5</td>
+    <td>Sonarqube</td>
+    <td>10.5</td>
   </tr>
 </table>
+
+## 2. MySQL Configurations
+
+
+
+## 3. Confguring ELK Stack
+
+This section will talk about how to install and configure the ELK stack 
+
+### 3.1 Configuring Elasticsearch
+
+
