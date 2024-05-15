@@ -147,9 +147,9 @@ xpack.ml.enabled: false
   ⁃ Start Elasticsearch with `bin/elasticsearch --enrollment-token <token>`, using the enrollment token that you generated.
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
-4. You can check if the elasticsearch instance is up and running on [](https://localhost:9200). The below statement should be printed. 
+4. You can check if the elasticsearch instance is up and running on https://localhost:9200. The below statement should be printed. 
 > [!IMPORTANT]
-> Since elasticsearch configures security automatically, please make sure to use HTTPS.
+> Since Elasticsearch configures security automatically in the latest versions, please make sure to use HTTPS.
 
 ```JSON
 {
@@ -171,5 +171,37 @@ xpack.ml.enabled: false
 }
 ```
 
+## 3.2 Configuring Kibana
 
+1. Download Kibana from the official [Elastic website](https://www.elastic.co/downloads/kibana)
+2. Navigate to **_/bin_** folder, and run the kibana instance using the below command.
+```
+./kibana
+```
+3. Then open the Kibana UI on http://localhost:5601. Paste the enrollment token printed in the elasticsearch logs. Use the username and password provided by elasticsearch. This automatically establishes a connection between the Elastisearch and Kibana instance.
+4. Then navigate to the **Dev Tools** option under Management tab on the Kibana UI to interact with elasticsearch.
+5. Type the below command in the console to fetch the health of the Elasticsearch instance.
+```
+GET /_cluster/health
+```
+It should print a result something like this
+```JSON
+{
+  "cluster_name": "elasticsearch",
+  "status": "yellow",
+  "timed_out": false,
+  "number_of_nodes": 1,
+  "number_of_data_nodes": 1,
+  "active_primary_shards": 39,
+  "active_shards": 39,
+  "relocating_shards": 0,
+  "initializing_shards": 0,
+  "unassigned_shards": 1,
+  "delayed_unassigned_shards": 0,
+  "number_of_pending_tasks": 0,
+  "number_of_in_flight_fetch": 0,
+  "task_max_waiting_in_queue_millis": 0,
+  "active_shards_percent_as_number": 97.5
+}
+```
 
