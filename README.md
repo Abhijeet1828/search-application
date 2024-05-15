@@ -380,3 +380,29 @@ public interface NetflixDataRepository extends ElasticsearchRepository<NetflixDa
 	Page<NetflixData> findByTitleContainingIgnoreCase(String title, Pageable pageable);
 }
 ```
+
+### 4.1.4 ElasticsearchOperations 
+
+For complex search queries on the elasticsearch index we can also use the ElasticsearchOperations class. The queries can be written as below:
+
+```Java
+@Repository
+public class ElasticsearchDaoImpl implements ElasticsearchDao {
+
+	private final ElasticsearchOperations elasticsearchOperations;
+
+	public ElasticsearchDaoImpl(ElasticsearchOperations elasticsearchOperations) {
+		this.elasticsearchOperations = elasticsearchOperations;
+	}
+
+	@Override
+	public SearchHits<NetflixData> searchByType(String type, int page, int size) {
+		Criteria criteria = new Criteria("type").is(type);
+
+		Query query = new CriteriaQuery(criteria, PageRequest.of(page, size));
+
+		return elasticsearchOperations.search(query, NetflixData.class);
+	}
+
+}
+```
