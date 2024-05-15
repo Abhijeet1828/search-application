@@ -59,6 +59,9 @@ Collectively, this sophisticated ecosystem of technologies harmonizes seamlessly
   </tr>
 </table>
 
+***
+***
+
 ## 2. MySQL Configurations
 
 This section talks about downloading MySQL server and performing actions such as creating database, creating tables and inserting data into the tables. All this is necessary for the further configuration of the Spring Boot application and ELK stack. 
@@ -104,7 +107,10 @@ INSERT INTO netflix_data(show_id,type,title,director,cast,country,date_added,rel
   - Second, you can add all the insert statements in a .sql file and run all the insert queries using the below command. The SQL file which is used in this instance can be found [here.](Database_Files/netflix_insert.sql)
 ```SQL
 source <<path-to-sql-file>>
-``` 
+```
+
+***
+***
 
 ## 3. Confguring ELK Stack
 
@@ -170,6 +176,7 @@ xpack.ml.enabled: false
   "tagline" : "You Know, for Search"
 }
 ```
+***
 
 ## 3.2 Configuring Kibana
 
@@ -208,6 +215,8 @@ It should print a result something like this
 ```
 PUT /<<index-name>>
 ```
+
+***
 
 ## 3.3 Configuring Logstash
 
@@ -254,5 +263,120 @@ output {
 ```
 ./logstash -f logstash-sample.conf
 ```
+***
+***
+
+# 4. Spring Boot Application
+
+## 4.1 Configuring Elasticsearch in Spring Boot
+
+### 4.1.1 Elasticsearch Configuration
+
+We need to add a configuration file which connects the Spring Boot application to the Elasticsearch instance. The below file contains the configuration:
+
+```Java
+@Configuration
+@EnableElasticsearchRepositories(basePackages = "com.custom.search.es.repository")
+public class ElasticsearchConfig extends ElasticsearchConfiguration {
+
+	@Value("${spring.elasticsearch.host}")
+	String elasticHost;
+
+	@Value("${spring.elasticsearch.ca.fingerprint}")
+	String elasticCaFingerprint;
+
+	@Value("${spring.elasticsearch.username}")
+	String elasticUsername;
+
+	@Value("${spring.elasticsearch.password}")
+	String elasticPassword;
+
+	@Override
+	public ClientConfiguration clientConfiguration() {
+		return ClientConfiguration.builder().connectedTo(elasticHost).usingSsl(elasticCaFingerprint)
+				.withBasicAuth(elasticUsername, elasticPassword).build();
+	}
+
+}
+```
+The properties can be kept in the application.properties file of the Spring Boot application. The SHA-256 fingerprint of the elastiscsearch instance certificate should be used here which was generated when the elasticsearch instance was first started. Same with the username and password. The properties are defined below:
+
+```
+spring.elasticsearch.host=127.0.0.1:9200
+spring.elasticsearch.ca.fingerprint=f9f3cc23489d84642a1f129703ebbb2cabfa918eb56da70a1d9cd67a534f75d1
+spring.elasticsearch.username=elastic
+spring.elasticsearch.password=I2VSOAmx4Xu-bRR5ZqmG
+```
+> [!IMPORTANT]
+> Use the IP address of the elasticsearch instance when defining the host since using 'localhost' does not work here.
 
 
+### 4.1.2 Elasticsearch Index Entity
+
+An index in elasticsearch instance can be defined as a Java DTO object to perform operations using the Spring Boot application. The entity is defined below.
+
+```Java
+@Getter
+@Setter
+@ToString
+@NoArgsConstructor
+@AllArgsConstructor
+@Document(indexName = "netflix", createIndex = false)
+public class NetflixData implements Serializable {
+
+	private static final long serialVersionUID = 1063565029021759659L;
+
+	@Id
+	private String id;
+
+	@Field(type = FieldType.Text, name = "show_id")
+	private String showId;
+
+	@Field(type = FieldType.Text, name = "type")
+	private String type;
+
+	@Field(type = FieldType.Text, name = "title")
+	private String title;
+
+	@Field(type = FieldType.Text, name = "director")
+	private String director;
+
+	@Field(type = FieldType.Text, name = "cast")
+	private String cast;
+
+	@Field(type = FieldType.Text, name = "country")
+	private String country;
+
+	@Field(type = FieldType.Date, format = DateFormat.date_time, name = "date_added")
+	private Date dateAdded;
+
+	@Field(type = FieldType.Date, format = DateFormat.date_time, name = "release_year")
+	private Date releaseYear;
+
+	@Field(type = FieldType.Text, name = "rating")
+	private String rating;
+
+	@Field(type = FieldType.Text, name = "duration")
+	private String duration;
+
+	@Field(type = FieldType.Text, name = "listed_in")
+	private String listedIn;
+
+	@Field(type = FieldType.Text, name = "description")
+	private String description;
+
+	@Field(type = FieldType.Date, format = DateFormat.date_time, name = "modified_timestamp")
+	private Date modifiedTimestamp;
+
+}
+```
+### 4.1.3 Elasticsearch Repository
+
+The elasticsearch repository can be used to perform various simple search and save operations on the index. The repository can be defined as below:
+
+```Java
+@Repository
+public interface NetflixDataRepository extends ElasticsearchRepository<NetflixData, String> {
+	Page<NetflixData> findByTitleContainingIgnoreCase(String title, Pageable pageable);
+}
+```
