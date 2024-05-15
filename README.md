@@ -204,4 +204,55 @@ It should print a result something like this
   "active_shards_percent_as_number": 97.5
 }
 ```
+6. Then, create an index using the below command. You can replace the <<index-name>> with your index name, I have used 'netflix' as the index name.
+```
+PUT /<<index-name>>
+```
+
+## 3.3 Configuring Logstash
+
+1. Download Logstash from the official [Elastic website](https://www.elastic.co/downloads/logstash)
+2. Also, download the MySQL Connector/J from the official [MySQL website](https://dev.mysql.com/downloads/connector/j/). This will be used to form a connection between MySQL instance and Logstash.
+3. Then, navigate to the **_/config_** folder and edit the **_logstash-sample.conf_** file. This file will contain the logic to scrape the data from MySQL database and insert it into the Elasticsearch instance. The file will contain the following data, and it can be changed according to your needs.
+  - The 'input' section of the configuration deals with connecting with MySQL and running the query based on **_modified_timestamp_** column. If there are any rows created  after the last sync between Logstash and MySQL, they will be scraped.
+  - The 'filter' section of the configuration deals with filtering any rows or transforming the data according to your needs.
+  - The 'output' section of the configuration deals with outputting the scraped data into the console and the elasticsearch instance in the given index. 
+```
+input {
+  jdbc {
+    jdbc_driver_library => "/Users/abhijeet/eclipse-workspace/tools/mysql-connector-j-8.4.0/mysql-connector-j-8.4.0.jar" 
+    jdbc_driver_class => "com.mysql.jdbc.Driver"
+    jdbc_connection_string => "jdbc:mysql://127.0.0.1:3306/netflix" 
+    jdbc_user => "root" 
+    jdbc_password => "password" 
+    jdbc_paging_enabled => true
+    tracking_column => "unix_ts_in_secs"
+    use_column_value => true
+    tracking_column_type => "numeric"
+    schedule => "0 */1 * * * *"
+    statement => "SELECT *, UNIX_TIMESTAMP(modified_timestamp) AS unix_ts_in_secs FROM netflix_data WHERE (UNIX_TIMESTAMP(modified_timestamp) > :sql_last_value AND modified_timestamp < NOW()) ORDER BY modified_timestamp ASC"
+  }
+}
+filter {
+  mutate {
+    copy => { "id" => "[@metadata][_id]"}
+    remove_field => ["id", "@version", "unix_ts_in_secs"]
+  }
+}
+output {
+  stdout { codec =>  "rubydebug"}
+  elasticsearch {
+    hosts => ["https://localhost:9200"]
+    user => "elastic"
+    password => "I2VSOAmx4Xu-bRR5ZqmG"
+    index => "netflix"
+    ssl_certificate_verification => false
+  }
+}
+```
+4. Once you have done all the configuration, navigate to **_/bin_** folder and run the Logstash instance using the below command.
+```
+./logstash -f logstash-sample.conf
+```
+
 
