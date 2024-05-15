@@ -112,5 +112,64 @@ This section will talk about how to install and configure the ELK stack. There a
 
 ### 3.1 Configuring Elasticsearch
 
+1. Firstly, download Elasticsearch from the official [Elastic website.](https://www.elastic.co/downloads/elasticsearch)
+2. Navigate to **_/config/elasticsearch.yml_** file and add the below statement before running the elasticsearch instance.
+```
+xpack.ml.enabled: false
+```
+3. Then, navigate to the **_/bin_** folder, and run the below command for starting the elasticsearch instance.
+```script
+./elasticsearch
+```
+3. During the execution of the above, copy the elasticsearch username, password, enrollment token for Kibana and SHA-256 fingerprint of the certificate. This will be used in further steps to configure Kibana and create a connection between Spring Boot application. It should look something like below:
+```
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+✅ Elasticsearch security features have been automatically configured!
+✅ Authentication is enabled and cluster connections are encrypted.
+
+ℹ️  Password for the elastic user (reset with `bin/elasticsearch-reset-password -u elastic`):
+  I2VSOAmx4Xu-bRR5ZqmG
+
+ℹ️  HTTP CA certificate SHA-256 fingerprint:
+  f9f3cc23489d84642a1f129703ebbb2cabfa918eb56da70a1d9cd67a534f75d1
+
+ℹ️  Configure Kibana to use this cluster:
+• Run Kibana and click the configuration link in the terminal when Kibana starts.
+• Copy the following enrollment token and paste it into Kibana in your browser (valid for the next 30 minutes):
+  eyJ2ZXIiOiI4LjEzLjIiLCJhZHIiOlsiMTAwLjEwMy4xMTkuNTI6OTIwMCJdLCJmZ3IiOiJmOWYzY2MyMzQ4OWQ4NDY0MmExZjEyOTcwM2ViYmIyY2FiZmE5MThlYjU2ZGE3MGExZDljZDY3YTUzNGY3NWQxIiwia2V5IjoiTG9sS0xvOEJ1MlAyLUVHaTdBbHg6bDNVTFg5S2dUNmlmSXRzVXRyOTJDQSJ9
+
+ℹ️  Configure other nodes to join this cluster:
+• On this node:
+  ⁃ Create an enrollment token with `bin/elasticsearch-create-enrollment-token -s node`.
+  ⁃ Uncomment the transport.host setting at the end of config/elasticsearch.yml.
+  ⁃ Restart Elasticsearch.
+• On other nodes:
+  ⁃ Start Elasticsearch with `bin/elasticsearch --enrollment-token <token>`, using the enrollment token that you generated.
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
+4. You can check if the elasticsearch instance is up and running on [](https://localhost:9200). The below statement should be printed. 
+> [!IMPORTANT]
+> Since elasticsearch configures security automatically, please make sure to use HTTPS.
+
+```JSON
+{
+  "name" : "MacBook-Pro.local",
+  "cluster_name" : "elasticsearch",
+  "cluster_uuid" : "E2qaGmBRQdSdXEp3ivHiBw",
+  "version" : {
+    "number" : "8.13.2",
+    "build_flavor" : "default",
+    "build_type" : "tar",
+    "build_hash" : "16cc90cd2d08a3147ce02b07e50894bc060a4cbf",
+    "build_date" : "2024-04-05T14:45:26.420424304Z",
+    "build_snapshot" : false,
+    "lucene_version" : "9.10.0",
+    "minimum_wire_compatibility_version" : "7.17.0",
+    "minimum_index_compatibility_version" : "7.0.0"
+  },
+  "tagline" : "You Know, for Search"
+}
+```
+
 
 
