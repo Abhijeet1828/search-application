@@ -408,3 +408,111 @@ public class ElasticsearchDaoImpl implements ElasticsearchDao {
 
 }
 ```
+
+## 4.2 Configuring JUnit5, Mockito & JaCoCo
+
+### 4.2.1 JUnit5 & Mockito
+
+This Spring Boot application uses the latest JUnit 5 for writing test cases to test basic functionality of the APIs and business logic. 
+
+1. Add JUnit5 and Mockito dependencies in **_pom.xml_** file.
+```XML
+<!-- https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-api -->
+<dependency>
+	<groupId>org.junit.jupiter</groupId>
+	<artifactId>junit-jupiter-api</artifactId>
+	<scope>test</scope>
+</dependency>
+
+<!-- https://mvnrepository.com/artifact/org.mockito/mockito-core -->
+<dependency>
+	<groupId>org.mockito</groupId>
+	<artifactId>mockito-core</artifactId>
+	<scope>test</scope>
+</dependency>
+```
+
+2. Then simply add test cases in the **_/src/test/java_** package of the application.
+```Java
+class NetflixSearchControllerV1Test {
+
+	private NetflixService netflixService;
+	private NetflixSearchControllerV1 controller;
+
+	@BeforeEach
+	void setUp() {
+		netflixService = mock(NetflixService.class);
+		controller = new NetflixSearchControllerV1(netflixService);
+	}
+
+	@Test
+	void searchByTitle_TitleFound_Returns2000() throws CommonException {
+		// Arrange
+		String title = "The Matrix";
+		int page = 0;
+		int size = 10;
+		when(netflixService.findByTitle(title, page, size)).thenReturn(mock(SearchResponse.class));
+
+		// Act
+		ResponseEntity<Object> response = controller.searchByTitle(title, page, size);
+		CommonResponse commonResponse = TypeConversionUtils.convertToCustomClass(response.getBody(),
+				CommonResponse.class);
+
+		// Assert
+		assertEquals(2000, commonResponse.getStatus().getStatusCode());
+	}
+}
+```
+
+### 4.2.2 Configuring JaCoCo
+
+Code coverage is a software metric used to measure how many lines of our code are executed during automated tests. JaCoCo is a code coverage reports generator for Java projects.
+
+1. Add JaCoCo Maven plugin in the **_pom.xml_** file of the project. You can customize this configuration according to your project. I have also excluded some of the packages which do not require test cases such as constants, entity classes and DTO classes.
+```XML
+<build>
+	<pluginManagement>
+		<plugins>
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>0.8.12</version>
+			</plugin>
+		</plugins>
+	</pluginManagement>
+	<plugins>
+		<plugin>
+			<groupId>org.jacoco</groupId>
+			<artifactId>jacoco-maven-plugin</artifactId>
+			<configuration>
+				<excludes>
+					<exclude>**/*com/custom/search/constants*/**</exclude>
+					<exclude>**/*com/custom/search/es/entity*/**</exclude>
+					<exclude>**/*com/custom/search/response*/**</exclude>
+				</excludes>
+			</configuration>
+			<executions>
+				<execution>
+					<goals>
+						<goal>prepare-agent</goal>
+					</goals>
+				</execution>
+				<execution>
+					<id>report</id>
+					<phase>test</phase>
+					<goals>
+						<goal>report</goal>
+					</goals>
+				</execution>
+			</executions>
+		</plugin>
+	</plugins>
+</build>
+```
+
+2. Then you can run the Maven Test command for the project which automatically generates the test coverage report.
+3. Navigate to the <strong><em><project_base_directory>/target/site/jacoco/index.html</em></strong>, and open the HTML file on web browser to view the coverage report. It should look something like the image below.
+
+
+
+
