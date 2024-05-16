@@ -299,7 +299,7 @@ public class ElasticsearchConfig extends ElasticsearchConfiguration {
 
 }
 ```
-The properties can be kept in the application.properties file of the Spring Boot application. The SHA-256 fingerprint of the elastiscsearch instance certificate should be used here which was generated when the elasticsearch instance was first started. Same with the username and password. The properties are defined below:
+The properties can be kept in the application.properties file of the Spring Boot application. The SHA-256 fingerprint of the elastiscsearch instance certificate should be used here which was generated when the elasticsearch instance was first [started](#configuring-elasticsearch). Same with the username and password. The properties are defined below:
 
 ```
 spring.elasticsearch.host=127.0.0.1:9200
