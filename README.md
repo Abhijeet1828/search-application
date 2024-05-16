@@ -116,6 +116,7 @@ source <<path-to-sql-file>>
 
 This section will talk about how to install and configure the ELK stack. There are two main things, how to connect Elasticsearch and Kibana, configuring Logstash to periodically scrape data from MySQL and insert into Elasticsearch.
 
+<a name="configuring-elasticsearch"></a>
 ### 3.1 Configuring Elasticsearch
 
 1. Firstly, download Elasticsearch from the official [Elastic website.](https://www.elastic.co/downloads/elasticsearch)
@@ -128,6 +129,7 @@ xpack.ml.enabled: false
 ./elasticsearch
 ```
 3. During the execution of the above, copy the elasticsearch username, password, enrollment token for Kibana and SHA-256 fingerprint of the certificate. This will be used in further steps to configure Kibana and create a connection between Spring Boot application. It should look something like below:
+
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ✅ Elasticsearch security features have been automatically configured!
