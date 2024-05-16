@@ -513,6 +513,8 @@ Code coverage is a software metric used to measure how many lines of our code ar
 2. Then you can run the Maven Test command for the project which automatically generates the test coverage report.
 3. Navigate to the <strong><em><project_base_directory>/target/site/jacoco/index.html</em></strong>, and open the HTML file on web browser to view the coverage report. It should look something like the image below.
 
+![JaCoCo Coverage Report](/img/jacoco.png)
 
+## 4.3 Configuring SonarQube
 
 
