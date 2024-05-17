@@ -720,3 +720,60 @@ management.health.elasticsearch.enabled=true
 		4. https://medium.com/@sewwandikaus.13/sonarqube-code-analysis-of-a-spring-boot-project-de50a45c4b66 <br>
 </details>
 
+***
+***
+
+## 6. Project Structure
+
+```
+├── pom.xml
+├── src
+│   ├── main
+│   │   ├── java
+│   │   │   └── com
+│   │   │       └── custom
+│   │   │           └── search
+│   │   │               ├── SearchApplication.java
+│   │   │               ├── configuration
+│   │   │               │   ├── ElasticsearchConfig.java
+│   │   │               │   └── SwaggerConfiguration.java
+│   │   │               ├── constants
+│   │   │               │   ├── FailureConstants.java
+│   │   │               │   └── SuccessConstants.java
+│   │   │               ├── controller
+│   │   │               │   └── NetflixSearchControllerV1.java
+│   │   │               ├── es
+│   │   │               │   ├── entity
+│   │   │               │   │   └── NetflixData.java
+│   │   │               │   └── repository
+│   │   │               │       ├── ElasticsearchDao.java
+│   │   │               │       ├── ElasticsearchDaoImpl.java
+│   │   │               │       └── NetflixDataRepository.java
+│   │   │               ├── response
+│   │   │               │   └── SearchResponse.java
+│   │   │               └── service
+│   │   │                   ├── NetflixService.java
+│   │   │                   ├── NetflixServiceV1Impl.java
+│   │   │                   └── NetflixServiceV2Impl.java
+│   │   └── resources
+│   │       ├── application.properties
+│   │       ├── logback.xml
+│   │       ├── static
+│   │       └── templates
+│   └── test
+│       └── java
+│           └── com
+│               └── custom
+│                   └── search
+│                       ├── SearchApplicationTests.java
+│                       ├── controller
+│                       │   └── NetflixSearchControllerV1Test.java
+│                       └── service
+│                           └── NetflixServiceV1ImplTest.java
+└── target
+    ├── site
+    │   └── jacoco
+    │       ├── index.html
+    │       ├── jacoco.csv
+    │       └── jacoco.xml
+```
