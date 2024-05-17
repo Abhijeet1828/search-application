@@ -180,7 +180,7 @@ xpack.ml.enabled: false
 ```
 ***
 
-## 3.2 Configuring Kibana
+### 3.2 Configuring Kibana
 
 1. Download Kibana from the official [Elastic website](https://www.elastic.co/downloads/kibana)
 2. Navigate to **_/bin_** folder, and run the kibana instance using the below command.
@@ -220,7 +220,7 @@ PUT /<<index-name>>
 
 ***
 
-## 3.3 Configuring Logstash
+### 3.3 Configuring Logstash
 
 1. Download Logstash from the official [Elastic website](https://www.elastic.co/downloads/logstash)
 2. Also, download the MySQL Connector/J from the official [MySQL website](https://dev.mysql.com/downloads/connector/j/). This will be used to form a connection between MySQL instance and Logstash.
@@ -268,11 +268,19 @@ output {
 ***
 ***
 
-# 4. Spring Boot Application
+## 4. Spring Boot Application
 
-## 4.1 Configuring Elasticsearch in Spring Boot
+### 4.1 Configuring Elasticsearch in Spring Boot
 
-### 4.1.1 Elasticsearch Configuration
+#### 4.1.1 Elasticsearch Configuration
+
+Before creating the configuration file, we need to add following dependencies in the spring boot application. 
+```XML
+<dependency>
+	<groupId>org.springframework.boot</groupId>
+	<artifactId>spring-boot-starter-data-elasticsearch</artifactId>
+</dependency>
+```
 
 We need to add a configuration file which connects the Spring Boot application to the Elasticsearch instance. The below file contains the configuration:
 
@@ -313,7 +321,7 @@ spring.elasticsearch.password=I2VSOAmx4Xu-bRR5ZqmG
 > Use the IP address of the elasticsearch instance when defining the host since using 'localhost' does not work here.
 
 
-### 4.1.2 Elasticsearch Index Entity
+#### 4.1.2 Elasticsearch Index Entity
 
 An index in elasticsearch instance can be defined as a Java DTO object to perform operations using the Spring Boot application. The entity is defined below.
 
@@ -372,7 +380,7 @@ public class NetflixData implements Serializable {
 
 }
 ```
-### 4.1.3 Elasticsearch Repository
+#### 4.1.3 Elasticsearch Repository
 
 The elasticsearch repository can be used to perform various simple search and save operations on the index. The repository can be defined as below:
 
@@ -383,7 +391,7 @@ public interface NetflixDataRepository extends ElasticsearchRepository<NetflixDa
 }
 ```
 
-### 4.1.4 ElasticsearchOperations 
+#### 4.1.4 ElasticsearchOperations 
 
 For complex search queries on the elasticsearch index we can also use the ElasticsearchOperations class. The queries can be written as below:
 
@@ -408,10 +416,11 @@ public class ElasticsearchDaoImpl implements ElasticsearchDao {
 
 }
 ```
+***
 
-## 4.2 Configuring JUnit5, Mockito & JaCoCo
+### 4.2 Configuring JUnit5, Mockito & JaCoCo
 
-### 4.2.1 JUnit5 & Mockito
+#### 4.2.1 JUnit5 & Mockito
 
 This Spring Boot application uses the latest JUnit 5 for writing test cases to test basic functionality of the APIs and business logic. 
 
@@ -464,7 +473,7 @@ class NetflixSearchControllerV1Test {
 }
 ```
 
-### 4.2.2 Configuring JaCoCo
+#### 4.2.2 Configuring JaCoCo
 
 Code coverage is a software metric used to measure how many lines of our code are executed during automated tests. JaCoCo is a code coverage reports generator for Java projects.
 
@@ -515,7 +524,9 @@ Code coverage is a software metric used to measure how many lines of our code ar
 
 ![JaCoCo Coverage Report](/img/jacoco.png)
 
-## 4.3 Configuring SonarQube
+***
+
+### 4.3 Configuring SonarQube
 
 We can also integrate SonarQube into our project to see an overview of all the code issues and test coverage reports in a singular dashboard. I have used Docker to create an instance of Sonarqube, since it is easy to manage. The steps to integrate sonarqube are given below:
 
@@ -545,7 +556,9 @@ mvn clean verify sonar:sonar -Dsonar.projectKey=SearchApplication -Dsonar.projec
 
 ![SonarQube Project Analysis](/img/sonarqube.png)
 
-## 4.4 Configuring Swagger UI
+***
+
+### 4.4 Configuring Swagger UI
 
 OpenAPI and Swagger makes it easy to document the APIs provided by the Spring Boot Application. The below steps provides an overview to integrate Swagger into the Spring Boot application and customize the Swagger UI and how it displays the API documentation. 
 
@@ -600,6 +613,167 @@ public ResponseEntity<Object> searchByTitle(@NotBlank @PathVariable String title
 
 }
 ```
-4. Once all the configuration is done, you can start your Spring Boot Project and navigate to http://localhost:8080/<context-path>/swagger-ui.html. It should look something like the image below.
+4. Once all the configuration is done, you can start your Spring Boot Project and navigate to [http://localhost:8080/<<context_path>>/swagger-ui/index.html](http://localhost:8080/search/swagger-ui/index.html). It should look something like the image below.
 
+![Swagger UI](/img/SwaggerUI.jpeg)
 
+***
+
+### 4.4 Actuator Health Check
+
+You can also configure actuator for health checks. 
+
+1. Add the following dependency in your **_pom.xml_** file.
+```XML
+<dependency>
+	<groupId>org.springframework.boot</groupId>
+	<artifactId>spring-boot-starter-actuator</artifactId>
+</dependency>
+```
+2. Then you can define the various health checks you want. I have also configured elasticsearch health check. The properties can be defined in the **_application.properties_** file.
+```
+# Actuator Properties
+management.endpoints.web.exposure.include=*
+management.health.defaults.enabled=true
+management.endpoint.health.show-details=always
+management.health.db.enabled=true
+management.health.diskspace.enabled=true
+management.health.elasticsearch.enabled=true
+```
+3. Then you can hit the health check URL i.e. http://localhost:8080/search/actuator/health to get different health check properties from your Spring Boot application. The response should look something like below:
+```JSON
+{
+  "status": "UP",
+  "components": {
+    "db": {
+      "status": "UP",
+      "details": {
+        "database": "MySQL",
+        "validationQuery": "isValid()"
+      }
+    },
+    "diskSpace": {
+      "status": "UP",
+      "details": {
+        "total": 494384795648,
+        "free": 115210346496,
+        "threshold": 10485760,
+        "path": "/Users/abhijeet/eclipse-workspace/search-application/Search/.",
+        "exists": true
+      }
+    },
+    "elasticsearch": {
+      "status": "UP",
+      "details": {
+        "cluster_name": "elasticsearch",
+        "status": "yellow",
+        "timed_out": false,
+        "number_of_nodes": 1,
+        "number_of_data_nodes": 1,
+        "active_primary_shards": 39,
+        "active_shards": 39,
+        "relocating_shards": 0,
+        "initializing_shards": 0,
+        "unassigned_shards": 1,
+        "delayed_unassigned_shards": 0,
+        "number_of_pending_tasks": 0,
+        "number_of_in_flight_fetch": 0,
+        "task_max_waiting_in_queue_millis": 0,
+        "active_shards_percent_as_number": 97.5
+      }
+    },
+    "ping": {
+      "status": "UP"
+    }
+  }
+}
+```
+
+***
+***
+
+## 5. References
+
+<details>
+	<summary>Spring Boot Elasticsearch</summary>
+		1. https://www.youtube.com/watch?v=YhJI9ILhUZM <br>
+		2. https://towardsdatascience.com/how-to-synchronize-elasticsearch-with-mysql-ed32fc57b339 <br>
+		3. https://medium.com/@abhishekranjandev/step-by-step-guide-to-using-elasticsearch-in-a-spring-boot-application-477ba7773dea <br>
+		4. https://reflectoring.io/spring-boot-elasticsearch/ <br>
+		5. https://medium.com/@tobintom/introducing-elasticsearch-with-springboot-3707370c2a41 <br>
+		6. https://medium.com/@truongbui95/exploring-elasticsearch-8-utilizing-spring-boot-3-and-spring-data-elasticsearch-5-495650115197 <br>
+		7. https://docs.spring.io/spring-data/elasticsearch/reference/repositories/definition.html <br>
+		8. https://howtodoinjava.com/spring-data/elasticsearch-with-spring-boot-data/ <br>
+</details>
+
+<details>
+	<summary>Swagger</summary>
+		1. https://medium.com/@berktorun.dev/swagger-like-a-pro-with-spring-boot-3-and-java-17-49eed0ce1d2f <br>
+		2. https://bell-sw.com/blog/documenting-rest-api-with-swagger-in-spring-boot-3/ <br>
+</details>
+
+<details>
+	<summary>Sonarqube</summary>
+		1. https://www.baeldung.com/sonar-qube <br>
+		2. https://medium.com/@salvipriya97/sonarqube-introduction-and-configuration-with-spring-boot-project-6fb92f4fe268 <br>
+		3. https://medium.com/@aedemirsen/what-is-sonarqube-and-how-do-we-integrate-it-into-our-spring-boot-project-14a529b3669d <br>
+		4. https://medium.com/@sewwandikaus.13/sonarqube-code-analysis-of-a-spring-boot-project-de50a45c4b66 <br>
+</details>
+
+***
+***
+
+## 6. Project Structure
+
+```
+├── pom.xml
+├── src
+│   ├── main
+│   │   ├── java
+│   │   │   └── com
+│   │   │       └── custom
+│   │   │           └── search
+│   │   │               ├── SearchApplication.java
+│   │   │               ├── configuration
+│   │   │               │   ├── ElasticsearchConfig.java
+│   │   │               │   └── SwaggerConfiguration.java
+│   │   │               ├── constants
+│   │   │               │   ├── FailureConstants.java
+│   │   │               │   └── SuccessConstants.java
+│   │   │               ├── controller
+│   │   │               │   └── NetflixSearchControllerV1.java
+│   │   │               ├── es
+│   │   │               │   ├── entity
+│   │   │               │   │   └── NetflixData.java
+│   │   │               │   └── repository
+│   │   │               │       ├── ElasticsearchDao.java
+│   │   │               │       ├── ElasticsearchDaoImpl.java
+│   │   │               │       └── NetflixDataRepository.java
+│   │   │               ├── response
+│   │   │               │   └── SearchResponse.java
+│   │   │               └── service
+│   │   │                   ├── NetflixService.java
+│   │   │                   ├── NetflixServiceV1Impl.java
+│   │   │                   └── NetflixServiceV2Impl.java
+│   │   └── resources
+│   │       ├── application.properties
+│   │       ├── logback.xml
+│   │       ├── static
+│   │       └── templates
+│   └── test
+│       └── java
+│           └── com
+│               └── custom
+│                   └── search
+│                       ├── SearchApplicationTests.java
+│                       ├── controller
+│                       │   └── NetflixSearchControllerV1Test.java
+│                       └── service
+│                           └── NetflixServiceV1ImplTest.java
+└── target
+    ├── site
+    │   └── jacoco
+    │       ├── index.html
+    │       ├── jacoco.csv
+    │       └── jacoco.xml
+```
