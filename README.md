@@ -20,6 +20,8 @@ In alignment with contemporary best practices, the application harnesses the pow
 
 Collectively, this sophisticated ecosystem of technologies harmonizes seamlessly to underpin the search application, empowering it to deliver unparalleled performance, reliability, and maintainability.
 
+![](/img/infrastructure.png)
+
 <table align="center">
   <tr>
     <th width="33px">Tools</td>
