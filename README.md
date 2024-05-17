@@ -517,4 +517,29 @@ Code coverage is a software metric used to measure how many lines of our code ar
 
 ## 4.3 Configuring SonarQube
 
+We can also integrate SonarQube into our project to see an overview of all the code issues and test coverage reports in a singular dashboard. I have used Docker to create an instance of Sonarqube, since it is easy to manage. The steps to integrate sonarqube are given below:
+
+1. Download the latest version of Sonarqube from Docker Dekstop.
+2. Add the below lines in **_pom.xml_** file of your Spring Boot project. It integrates the sonar scanner maven plugin.
+```XML
+<build>
+	<pluginManagement>
+		<plugins>
+			<plugin>
+				<groupId>org.sonarsource.scanner.maven</groupId>
+				<artifactId>sonar-maven-plugin</artifactId>
+				<version>3.11.0.3922</version>
+			</plugin>
+		</plugins>
+	</pluginManagement>
+</build>
+```
+3. Once this is added you can login into the Sonarqube UI using the address http://localhost:9000
+4. On the webpage, you can create a global token and give permissions to all projects for the same token.
+5. Then, you can create a project with the project key and name according to your Spring Boot project. I have used 'SearchApplication' as project name and key.
+6. Once the project is created, you can navigate to the project base directory in terminal and run the below command. This will send all the relevant code and JaCoCo reports to Sonarqube.
+```
+mvn clean verify sonar:sonar -Dsonar.projectKey=SearchApplication -Dsonar.projectName='SearchApplication' -Dsonar.host.url=http://localhost:9000 -Dsonar.token=sqa_5a29e458e7156bb2c95d8c8d06ea52cf926ba5c1
+```
+7. Then check the Sonarqube webpage to view the code issues and test coverage reports all in one place. It should look something like the below picture.
 
