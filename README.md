@@ -274,6 +274,14 @@ output {
 
 ### 4.1.1 Elasticsearch Configuration
 
+Before creating the configuration file, we need to add following dependencies in the spring boot application. 
+```XML
+<dependency>
+	<groupId>org.springframework.boot</groupId>
+	<artifactId>spring-boot-starter-data-elasticsearch</artifactId>
+</dependency>
+```
+
 We need to add a configuration file which connects the Spring Boot application to the Elasticsearch instance. The below file contains the configuration:
 
 ```Java
@@ -408,6 +416,7 @@ public class ElasticsearchDaoImpl implements ElasticsearchDao {
 
 }
 ```
+***
 
 ## 4.2 Configuring JUnit5, Mockito & JaCoCo
 
@@ -515,6 +524,8 @@ Code coverage is a software metric used to measure how many lines of our code ar
 
 ![JaCoCo Coverage Report](/img/jacoco.png)
 
+***
+
 ## 4.3 Configuring SonarQube
 
 We can also integrate SonarQube into our project to see an overview of all the code issues and test coverage reports in a singular dashboard. I have used Docker to create an instance of Sonarqube, since it is easy to manage. The steps to integrate sonarqube are given below:
@@ -544,6 +555,8 @@ mvn clean verify sonar:sonar -Dsonar.projectKey=SearchApplication -Dsonar.projec
 7. Then check the Sonarqube webpage to view the code issues and test coverage reports all in one place. It should look something like the below picture.
 
 ![SonarQube Project Analysis](/img/sonarqube.png)
+
+***
 
 ## 4.4 Configuring Swagger UI
 
@@ -600,6 +613,81 @@ public ResponseEntity<Object> searchByTitle(@NotBlank @PathVariable String title
 
 }
 ```
-4. Once all the configuration is done, you can start your Spring Boot Project and navigate to http://localhost:8080/<context-path>/swagger-ui.html. It should look something like the image below.
+4. Once all the configuration is done, you can start your Spring Boot Project and navigate to [http://localhost:8080/<<context_path>>/swagger-ui/index.html](http://localhost:8080/search/swagger-ui/index.html). It should look something like the image below.
 
+![Swagger UI](/img/SwaggerUI.jpeg)
 
+***
+
+## 4.4 Actuator Health Check
+
+You can also configure actuator for health checks. 
+
+1. Add the following dependency in your **_pom.xml_** file.
+```XML
+<dependency>
+	<groupId>org.springframework.boot</groupId>
+	<artifactId>spring-boot-starter-actuator</artifactId>
+</dependency>
+```
+2. Then you can define the various health checks you want. I have also configured elasticsearch health check. The properties can be defined in the **_application.properties_** file.
+```
+# Actuator Properties
+management.endpoints.web.exposure.include=*
+management.health.defaults.enabled=true
+management.endpoint.health.show-details=always
+management.health.db.enabled=true
+management.health.diskspace.enabled=true
+management.health.elasticsearch.enabled=true
+```
+3. Then you can hit the health check URL i.e. http://localhost:8080/search/actuator/health to get different health check properties from your Spring Boot application. The response should look something like below:
+```JSON
+{
+  "status": "UP",
+  "components": {
+    "db": {
+      "status": "UP",
+      "details": {
+        "database": "MySQL",
+        "validationQuery": "isValid()"
+      }
+    },
+    "diskSpace": {
+      "status": "UP",
+      "details": {
+        "total": 494384795648,
+        "free": 115210346496,
+        "threshold": 10485760,
+        "path": "/Users/abhijeet/eclipse-workspace/search-application/Search/.",
+        "exists": true
+      }
+    },
+    "elasticsearch": {
+      "status": "UP",
+      "details": {
+        "cluster_name": "elasticsearch",
+        "status": "yellow",
+        "timed_out": false,
+        "number_of_nodes": 1,
+        "number_of_data_nodes": 1,
+        "active_primary_shards": 39,
+        "active_shards": 39,
+        "relocating_shards": 0,
+        "initializing_shards": 0,
+        "unassigned_shards": 1,
+        "delayed_unassigned_shards": 0,
+        "number_of_pending_tasks": 0,
+        "number_of_in_flight_fetch": 0,
+        "task_max_waiting_in_queue_millis": 0,
+        "active_shards_percent_as_number": 97.5
+      }
+    },
+    "ping": {
+      "status": "UP"
+    }
+  }
+}
+```
+
+***
+***
