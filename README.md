@@ -534,7 +534,7 @@ We can also integrate SonarQube into our project to see an overview of all the c
 	</pluginManagement>
 </build>
 ```
-3. Once this is added you can login into the Sonarqube UI using the address http://localhost:9000
+3. Once this is added you can login into the Sonarqube UI using the address http://localhost:9000.
 4. On the webpage, you can create a global token and give permissions to all projects for the same token.
 5. Then, you can create a project with the project key and name according to your Spring Boot project. I have used 'SearchApplication' as project name and key.
 6. Once the project is created, you can navigate to the project base directory in terminal and run the below command. This will send all the relevant code and JaCoCo reports to Sonarqube.
@@ -542,4 +542,64 @@ We can also integrate SonarQube into our project to see an overview of all the c
 mvn clean verify sonar:sonar -Dsonar.projectKey=SearchApplication -Dsonar.projectName='SearchApplication' -Dsonar.host.url=http://localhost:9000 -Dsonar.token=sqa_5a29e458e7156bb2c95d8c8d06ea52cf926ba5c1
 ```
 7. Then check the Sonarqube webpage to view the code issues and test coverage reports all in one place. It should look something like the below picture.
+
+![SonarQube Project Analysis](/img/sonarqube.png)
+
+## 4.4 Configuring Swagger UI
+
+OpenAPI and Swagger makes it easy to document the APIs provided by the Spring Boot Application. The below steps provides an overview to integrate Swagger into the Spring Boot application and customize the Swagger UI and how it displays the API documentation. 
+
+1. Add the following dependencies in your **_pom.xml_** file.
+```XML
+<!-- https://mvnrepository.com/artifact/org.springdoc/springdoc-openapi-starter-webmvc-ui -->
+<dependency>
+	<groupId>org.springdoc</groupId>
+	<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+	<version>2.5.0</version>
+</dependency>
+```
+2. To add custom contact and title information on the Swagger UI, we need to add a configuration for OpenAPI. This can be done as follows:
+```Java
+@Configuration
+public class SwaggerConfiguration {
+
+	@Bean
+	public OpenAPI defineOpenAPI() {
+		Server server = new Server();
+		server.setUrl("http://localhost:8080/search");
+		server.setDescription("Development");
+
+		Contact contact = new Contact();
+		contact.setName("Abhijeet");
+		contact.setEmail("srivastava.abhijeet96@gmail.com");
+
+		Info info = new Info().title("Spring Boot Elasticsearch Project").version("1.0")
+				.description("This project provides API for querying elasticsearch")
+				.contact(contact);
+
+		List<Server> servers = new ArrayList<>();
+		servers.add(server);
+
+		return new OpenAPI().info(info).servers(servers);
+	}
+}
+```
+3.  You can also add additional information and tags on the APIs to document them better, using the bellow annotations. The OpenAPI annotations are @Tag, @Operation & @ApiResponse. These provide ways to customize how APIs are defined in the Swagger UI.
+```Java
+@Tag(name = "get", description = "GET methods of Netflix Controller")
+@Operation(summary = "Fetch the netflix titles",
+		description = "The API fetches the titles matching the provided title string.")
+@ApiResponse(responseCode = "2000", description = "Titles Found", content = {
+	@Content(mediaType = "application/json", schema = @Schema(implementation = SearchResponse.class)) })
+@ApiResponse(responseCode = "-2000", description = "No titles Found", content = {
+	@Content(schema = @Schema(implementation = CommonResponse.class)) })
+
+@GetMapping(value = "/title/{title}/{page}/{size}")
+public ResponseEntity<Object> searchByTitle(@NotBlank @PathVariable String title,
+	@PositiveOrZero @PathVariable int page, @Positive @PathVariable int size) {
+
+}
+```
+4. Once all the configuration is done, you can start your Spring Boot Project and navigate to http://localhost:8080/<context-path>/swagger-ui.html. It should look something like the image below.
+
 
